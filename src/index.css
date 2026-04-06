@@ -59,6 +59,12 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
+    --admin-sidebar: 152 42% 14%;
+    --admin-sidebar-foreground: 150 20% 90%;
+    --admin-sidebar-active: 152 50% 30%;
+    --admin-surface: 33 20% 97%;
+    --admin-card-hover: 152 30% 94%;
+
     --font-heading: 'Merriweather', Georgia, serif;
     --font-body: 'Source Sans 3', 'Helvetica Neue', sans-serif;
   }
