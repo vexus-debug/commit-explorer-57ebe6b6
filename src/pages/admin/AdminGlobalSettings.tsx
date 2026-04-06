@@ -6,8 +6,10 @@ const AdminGlobalSettings = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Global Settings</h1>
-      <p className="text-muted-foreground text-sm mb-6">Site-wide settings that affect every page.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Global Settings</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Site-wide settings that affect every page.</p>
+      </div>
 
       <Section title="Site Identity">
         <FieldRow>
@@ -32,7 +34,7 @@ const AdminGlobalSettings = () => {
           <Field label="Email" value={content.topBar.email} onChange={(v) => updateContent("topBar.email", v)} />
         </FieldRow>
 
-        <h3 className="text-sm font-semibold text-foreground mt-4">Social Links</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">Social Links</h3>
         <ListEditor
           items={content.topBar.socialLinks}
           onUpdate={(items) => updateContent("topBar.socialLinks", items)}
@@ -74,7 +76,7 @@ const AdminGlobalSettings = () => {
         <Field label="Contact Email" value={content.footer.contactEmail} onChange={(v) => updateContent("footer.contactEmail", v)} />
         <Field label="Copyright Text" value={content.footer.copyright} onChange={(v) => updateContent("footer.copyright", v)} />
 
-        <h3 className="text-sm font-semibold text-foreground mt-4">Quick Links</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">Quick Links</h3>
         <ListEditor
           items={content.footer.quickLinks}
           onUpdate={(items) => updateContent("footer.quickLinks", items)}
@@ -88,7 +90,7 @@ const AdminGlobalSettings = () => {
           )}
         />
 
-        <h3 className="text-sm font-semibold text-foreground mt-4">Info Links</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">Info Links</h3>
         <ListEditor
           items={content.footer.infoLinks}
           onUpdate={(items) => updateContent("footer.infoLinks", items)}
@@ -102,7 +104,7 @@ const AdminGlobalSettings = () => {
           )}
         />
 
-        <h3 className="text-sm font-semibold text-foreground mt-4">Social Links</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">Social Links</h3>
         <ListEditor
           items={content.footer.socialLinks}
           onUpdate={(items) => updateContent("footer.socialLinks", items)}

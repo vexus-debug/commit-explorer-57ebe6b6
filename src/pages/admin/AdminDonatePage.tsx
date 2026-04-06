@@ -7,8 +7,10 @@ const AdminDonatePage = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Donate Page</h1>
-      <p className="text-muted-foreground text-sm mb-6">Edit donation page content.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Donate Page</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Edit donation page content.</p>
+      </div>
 
       <Section title="Hero Section">
         <Field label="Title" value={d.title} onChange={(v) => updateContent("donate.title", v)} />
