@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { useSiteContent } from "@/contexts/SiteContentContext";
 import {
   Settings, Home, Info, BookOpen, Image, Phone, Heart,
   Users, Newspaper, LayoutDashboard, LogOut, RotateCcw, ExternalLink,
+  Menu, X, ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -25,59 +26,91 @@ const AdminLayout = () => {
   const { isAdmin, setIsAdmin, resetContent } = useSiteContent();
   const navigate = useNavigate();
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isAdmin) navigate("/admin/login");
   }, [isAdmin, navigate]);
 
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   if (!isAdmin) return null;
 
+  const currentPage = sidebarLinks.find(l => l.path === location.pathname)?.label || "Dashboard";
+
   return (
-    <div className="min-h-screen flex bg-muted/30">
+    <div className="min-h-screen flex bg-admin-surface">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-foreground/40 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-card border-r border-border flex flex-col shrink-0 sticky top-0 h-screen">
-        <div className="p-4 border-b border-border">
-          <Link to="/admin" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Settings className="h-4 w-4 text-primary-foreground" />
+      <aside
+        className={`
+          fixed lg:sticky top-0 left-0 z-50 h-screen w-72 lg:w-64
+          flex flex-col shrink-0
+          bg-admin-sidebar text-admin-sidebar-foreground
+          transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
+      >
+        {/* Logo area */}
+        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+          <Link to="/admin" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 bg-admin-sidebar-active rounded-xl flex items-center justify-center shadow-lg shadow-black/20">
+              <Settings className="h-4.5 w-4.5 text-white" />
             </div>
-            <span className="font-heading text-base font-bold text-foreground">Admin Panel</span>
+            <span className="font-heading text-base font-bold text-white tracking-tight">Admin</span>
           </Link>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 text-white/70"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
-        <ScrollArea className="flex-1 py-2">
-          <nav className="space-y-0.5 px-2">
+        <ScrollArea className="flex-1 py-3">
+          <nav className="space-y-0.5 px-3">
             {sidebarLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
                     isActive
-                      ? "bg-primary text-primary-foreground font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-admin-sidebar-active text-white font-semibold shadow-md shadow-black/15"
+                      : "text-white/65 hover:bg-white/8 hover:text-white/90"
                   }`}
                 >
                   <link.icon className="h-4 w-4 shrink-0" />
-                  {link.label}
+                  <span>{link.label}</span>
+                  {isActive && <ChevronRight className="h-3.5 w-3.5 ml-auto opacity-60" />}
                 </Link>
               );
             })}
           </nav>
         </ScrollArea>
 
-        <div className="p-3 border-t border-border space-y-2">
+        <div className="p-3 border-t border-white/10 space-y-1.5">
           <a href="/" target="_blank" rel="noopener noreferrer">
-            <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs">
+            <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-xs text-white/65 hover:text-white hover:bg-white/8">
               <ExternalLink className="h-3.5 w-3.5" />
               View Website
             </Button>
           </a>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="w-full justify-start gap-2 text-xs"
+            className="w-full justify-start gap-2 text-xs text-white/65 hover:text-white hover:bg-white/8"
             onClick={() => {
               if (confirm("Reset all content to defaults? This cannot be undone.")) {
                 resetContent();
@@ -85,12 +118,12 @@ const AdminLayout = () => {
             }}
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            Reset All Content
+            Reset Content
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="w-full justify-start gap-2 text-xs text-destructive hover:text-destructive"
+            className="w-full justify-start gap-2 text-xs text-red-300 hover:text-red-200 hover:bg-red-500/15"
             onClick={() => {
               setIsAdmin(false);
               navigate("/admin/login");
@@ -102,12 +135,28 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main */}
-      <main className="flex-1 min-h-screen">
-        <div className="p-6 max-w-5xl mx-auto">
-          <Outlet />
-        </div>
-      </main>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-h-screen min-w-0">
+        {/* Mobile top bar */}
+        <header className="sticky top-0 z-30 bg-admin-surface/80 backdrop-blur-lg border-b border-border lg:hidden">
+          <div className="flex items-center justify-between px-4 h-14">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 -ml-2 rounded-xl hover:bg-muted text-foreground"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <span className="font-heading text-sm font-bold text-foreground">{currentPage}</span>
+            <div className="w-9" /> {/* spacer */}
+          </div>
+        </header>
+
+        <main className="flex-1">
+          <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

@@ -73,6 +73,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "admin-sidebar": {
+          DEFAULT: "hsl(var(--admin-sidebar))",
+          foreground: "hsl(var(--admin-sidebar-foreground))",
+          active: "hsl(var(--admin-sidebar-active))",
+        },
+        "admin-surface": "hsl(var(--admin-surface))",
+        "admin-card-hover": "hsl(var(--admin-card-hover))",
       },
       borderRadius: {
         lg: "var(--radius)",
