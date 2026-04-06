@@ -1,5 +1,5 @@
 import { useSiteContent } from "@/contexts/SiteContentContext";
-import { Section, Field, FieldRow, ListEditor, SaveNotice, StringListEditor } from "@/components/admin/EditorComponents";
+import { Section, Field, FieldRow, ListEditor, SaveNotice, StringListEditor, ImageUploadField } from "@/components/admin/EditorComponents";
 
 const AdminProgramsPage = () => {
   const { content, updateContent } = useSiteContent();
@@ -7,8 +7,10 @@ const AdminProgramsPage = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Programs Page</h1>
-      <p className="text-muted-foreground text-sm mb-6">Edit programs, locations, and process steps.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Programs Page</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Edit programs, locations, and process steps.</p>
+      </div>
 
       <Section title="Page Hero">
         <Field label="Title" value={p.heroTitle} onChange={(v) => updateContent("programs.heroTitle", v)} />
@@ -35,7 +37,8 @@ const AdminProgramsPage = () => {
                 <Field label="Title" value={item.title} onChange={(v) => update("title", v)} />
               </FieldRow>
               <Field label="Description" value={item.description} onChange={(v) => update("description", v)} multiline />
-              <h4 className="text-xs font-semibold text-muted-foreground mt-2">Stats</h4>
+              <ImageUploadField label="Program Image" currentSrc={item.image} onUrlChange={(v) => update("image", v)} />
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">Stats</h4>
               {item.stats.map((s: any, si: number) => (
                 <FieldRow key={si}>
                   <Field label="Value" value={s.value} onChange={(v) => {

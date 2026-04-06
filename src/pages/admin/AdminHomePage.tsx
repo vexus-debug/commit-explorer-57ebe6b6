@@ -1,13 +1,15 @@
 import { useSiteContent } from "@/contexts/SiteContentContext";
-import { Section, Field, FieldRow, ListEditor, SaveNotice, StringListEditor } from "@/components/admin/EditorComponents";
+import { Section, Field, FieldRow, ListEditor, SaveNotice, StringListEditor, ImageUploadField } from "@/components/admin/EditorComponents";
 
 const AdminHomePage = () => {
   const { content, updateContent } = useSiteContent();
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Home Page</h1>
-      <p className="text-muted-foreground text-sm mb-6">Edit every section of the home page.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Home Page</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Edit every section of the home page.</p>
+      </div>
 
       {/* Hero */}
       <Section title="Hero Section">
@@ -17,7 +19,8 @@ const AdminHomePage = () => {
           <Field label="Title Line 2 (highlighted)" value={content.hero.titleLine2} onChange={(v) => updateContent("hero.titleLine2", v)} />
         </FieldRow>
         <Field label="Description" value={content.hero.description} onChange={(v) => updateContent("hero.description", v)} multiline />
-        <h3 className="text-sm font-semibold text-foreground">Stats</h3>
+        <ImageUploadField label="Hero Background Image" currentSrc={content.hero.image} onUrlChange={(v) => updateContent("hero.image", v)} />
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Stats</h3>
         <ListEditor
           items={content.hero.stats}
           onUpdate={(items) => updateContent("hero.stats", items)}
@@ -50,7 +53,7 @@ const AdminHomePage = () => {
           addLabel="Add Bullet"
         />
 
-        <h3 className="text-sm font-semibold text-foreground mt-4">Values Block</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">Values Block</h3>
         <Field label="Values Label" value={content.mission.valuesLabel} onChange={(v) => updateContent("mission.valuesLabel", v)} />
         <Field label="Values Title" value={content.mission.valuesTitle} onChange={(v) => updateContent("mission.valuesTitle", v)} />
         <Field label="Values Subtitle" value={content.mission.valuesSubtitle} onChange={(v) => updateContent("mission.valuesSubtitle", v)} multiline />
@@ -90,6 +93,7 @@ const AdminHomePage = () => {
               </FieldRow>
               <Field label="Title" value={item.title} onChange={(v) => update("title", v)} />
               <Field label="Description" value={item.description} onChange={(v) => update("description", v)} multiline />
+              <ImageUploadField label="Step Image" currentSrc={item.image} onUrlChange={(v) => update("image", v)} />
               <FieldRow>
                 <Field label="Stat Value" value={item.stat} onChange={(v) => update("stat", v)} />
                 <Field label="Stat Label" value={item.statLabel} onChange={(v) => update("statLabel", v)} />
@@ -108,7 +112,7 @@ const AdminHomePage = () => {
           <Field label="Quote" value={content.impact.quote} onChange={(v) => updateContent("impact.quote", v)} />
           <Field label="Quote Author" value={content.impact.quoteAuthor} onChange={(v) => updateContent("impact.quoteAuthor", v)} />
         </FieldRow>
-        <h3 className="text-sm font-semibold text-foreground">Stats</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Stats</h3>
         <ListEditor
           items={content.impact.stats}
           onUpdate={(items) => updateContent("impact.stats", items)}
@@ -129,6 +133,31 @@ const AdminHomePage = () => {
         <Field label="Section Label" value={content.gallerySection.sectionLabel} onChange={(v) => updateContent("gallerySection.sectionLabel", v)} />
         <Field label="Title" value={content.gallerySection.title} onChange={(v) => updateContent("gallerySection.title", v)} />
         <Field label="Subtitle" value={content.gallerySection.subtitle} onChange={(v) => updateContent("gallerySection.subtitle", v)} multiline />
+      </Section>
+
+      {/* Programs Cards (Home) */}
+      <Section title="Programs Cards (Home)">
+        <ListEditor
+          items={content.programCards}
+          onUpdate={(items) => updateContent("programCards", items)}
+          addLabel="Add Program Card"
+          onAdd={() => ({ title: "", description: "", image: "", beneficiaries: "", goal: "", raised: "", progress: 0 })}
+          renderItem={(item, _i, update) => (
+            <>
+              <Field label="Title" value={item.title} onChange={(v) => update("title", v)} />
+              <Field label="Description" value={item.description} onChange={(v) => update("description", v)} multiline />
+              <ImageUploadField label="Program Image" currentSrc={item.image} onUrlChange={(v) => update("image", v)} />
+              <FieldRow>
+                <Field label="Beneficiaries" value={item.beneficiaries} onChange={(v) => update("beneficiaries", v)} />
+                <Field label="Goal" value={item.goal} onChange={(v) => update("goal", v)} />
+              </FieldRow>
+              <FieldRow>
+                <Field label="Raised" value={item.raised} onChange={(v) => update("raised", v)} />
+                <Field label="Progress (%)" value={String(item.progress)} onChange={(v) => update("progress", parseInt(v) || 0)} type="number" />
+              </FieldRow>
+            </>
+          )}
+        />
       </Section>
 
       {/* Testimonials */}
@@ -171,7 +200,7 @@ const AdminHomePage = () => {
             </>
           )}
         />
-        <h3 className="text-sm font-semibold text-foreground mt-4">Support Box</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">Support Box</h3>
         <Field label="Support Title" value={content.faq.supportTitle} onChange={(v) => updateContent("faq.supportTitle", v)} />
         <Field label="Support Description" value={content.faq.supportDescription} onChange={(v) => updateContent("faq.supportDescription", v)} />
         <FieldRow>

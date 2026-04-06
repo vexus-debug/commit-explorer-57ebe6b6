@@ -1,8 +1,5 @@
 import { useSiteContent } from "@/contexts/SiteContentContext";
 import { Section, Field, FieldRow, ListEditor, SaveNotice, ImageUploadField, StringListEditor } from "@/components/admin/EditorComponents";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
 
 const AdminGalleryPage = () => {
   const { content, updateContent } = useSiteContent();
@@ -10,8 +7,10 @@ const AdminGalleryPage = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Gallery Management</h1>
-      <p className="text-muted-foreground text-sm mb-6">Add, edit, remove gallery images and categories.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Gallery Management</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Add, edit, remove gallery images and categories.</p>
+      </div>
 
       <Section title="Page Hero">
         <Field label="Title" value={g.heroTitle} onChange={(v) => updateContent("gallery.heroTitle", v)} />
@@ -28,7 +27,7 @@ const AdminGalleryPage = () => {
         />
       </Section>
 
-      <Section title="Gallery Images" description="Manage all gallery images. Upload new images or provide URLs.">
+      <Section title="Gallery Images" description="Manage all gallery images">
         <ListEditor
           items={g.images}
           onUpdate={(items) => updateContent("gallery.images", items)}
@@ -42,10 +41,10 @@ const AdminGalleryPage = () => {
                 <Field label="Caption" value={item.caption} onChange={(v) => update("caption", v)} />
               </FieldRow>
               <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Categories</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Categories</label>
                 <div className="flex flex-wrap gap-2">
                   {g.categories.filter(c => c !== "All").map((cat) => (
-                    <label key={cat} className="flex items-center gap-1.5 text-xs bg-muted/50 px-2.5 py-1.5 rounded-lg cursor-pointer">
+                    <label key={cat} className="flex items-center gap-1.5 text-xs bg-muted/30 px-2.5 py-1.5 rounded-lg cursor-pointer border border-border/30">
                       <input
                         type="checkbox"
                         checked={item.category.includes(cat)}

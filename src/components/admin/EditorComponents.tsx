@@ -1,15 +1,29 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus, GripVertical } from "lucide-react";
-import type { ReactNode } from "react";
+import { Trash2, Plus, GripVertical, Upload, Link, X, ImageIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { type ReactNode, useState } from "react";
 
-export function Section({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
+export function Section({ title, description, children, icon }: { title: string; description?: string; children: ReactNode; icon?: ReactNode }) {
+  const [open, setOpen] = useState(true);
   return (
-    <div className="bg-card rounded-xl border border-border p-6 mb-6">
-      <h2 className="font-heading text-lg font-bold text-foreground mb-1">{title}</h2>
-      {description && <p className="text-muted-foreground text-xs mb-4">{description}</p>}
-      <div className="space-y-4">{children}</div>
+    <div className="bg-card rounded-2xl border border-border mb-4 overflow-hidden shadow-sm">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-3 p-4 sm:p-5 text-left hover:bg-muted/30 transition-colors"
+      >
+        {icon && <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">{icon}</div>}
+        <div className="flex-1 min-w-0">
+          <h2 className="font-heading text-base sm:text-lg font-bold text-foreground truncate">{title}</h2>
+          {description && <p className="text-muted-foreground text-xs mt-0.5 truncate">{description}</p>}
+        </div>
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+      </button>
+      {open && (
+        <div className="px-4 sm:px-5 pb-4 sm:pb-5 space-y-4 border-t border-border/50 pt-4">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
@@ -19,18 +33,18 @@ export function Field({ label, value, onChange, type = "text", placeholder, mult
 }) {
   return (
     <div>
-      <label className="text-sm font-medium text-foreground mb-1.5 block">{label}</label>
+      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">{label}</label>
       {multiline ? (
-        <Textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={rows || 3} className="rounded-lg text-sm" />
+        <Textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={rows || 3} className="rounded-xl text-sm bg-muted/30 border-border/50 focus:bg-card transition-colors" />
       ) : (
-        <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="rounded-lg text-sm" />
+        <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="rounded-xl text-sm bg-muted/30 border-border/50 focus:bg-card transition-colors" />
       )}
     </div>
   );
 }
 
 export function FieldRow({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-2 gap-4">{children}</div>;
+  return <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{children}</div>;
 }
 
 export function ListEditor({ items, onUpdate, renderItem, onAdd, addLabel = "Add Item" }: {
@@ -57,15 +71,15 @@ export function ListEditor({ items, onUpdate, renderItem, onAdd, addLabel = "Add
   return (
     <div className="space-y-3">
       {items.map((item, i) => (
-        <div key={i} className="bg-muted/50 rounded-lg p-4 relative group">
+        <div key={i} className="bg-muted/30 rounded-xl p-3 sm:p-4 relative border border-border/30">
           <div className="flex items-start gap-2">
-            <GripVertical className="h-4 w-4 text-muted-foreground mt-2 shrink-0" />
-            <div className="flex-1 space-y-3">
+            <GripVertical className="h-4 w-4 text-muted-foreground/50 mt-2 shrink-0 hidden sm:block" />
+            <div className="flex-1 space-y-3 min-w-0">
               {renderItem(item, i, (field, value) => updateItem(i, field, value))}
             </div>
             <button
               onClick={() => removeItem(i)}
-              className="text-muted-foreground hover:text-destructive transition-colors p-1"
+              className="text-muted-foreground hover:text-destructive transition-colors p-1.5 rounded-lg hover:bg-destructive/10 shrink-0"
               title="Remove"
             >
               <Trash2 className="h-4 w-4" />
@@ -73,7 +87,7 @@ export function ListEditor({ items, onUpdate, renderItem, onAdd, addLabel = "Add
           </div>
         </div>
       ))}
-      <Button variant="outline" size="sm" onClick={addItem} className="gap-1 text-xs">
+      <Button variant="outline" size="sm" onClick={addItem} className="gap-1.5 text-xs rounded-xl border-dashed border-2 w-full sm:w-auto">
         <Plus className="h-3.5 w-3.5" />
         {addLabel}
       </Button>
@@ -84,6 +98,8 @@ export function ListEditor({ items, onUpdate, renderItem, onAdd, addLabel = "Add
 export function ImageUploadField({ label, currentSrc, onUrlChange }: {
   label: string; currentSrc: string; onUrlChange: (url: string) => void;
 }) {
+  const [mode, setMode] = useState<"upload" | "url">("upload");
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -96,31 +112,60 @@ export function ImageUploadField({ label, currentSrc, onUrlChange }: {
 
   return (
     <div>
-      <label className="text-sm font-medium text-foreground mb-1.5 block">{label}</label>
-      {currentSrc && (
-        <div className="mb-2 relative w-32 h-20 rounded-lg overflow-hidden border border-border">
-          <img src={currentSrc} alt="Preview" className="w-full h-full object-cover" />
-          <button
-            onClick={() => onUrlChange("")}
-            className="absolute top-1 right-1 bg-destructive/90 text-destructive-foreground rounded-full p-0.5"
-          >
-            <Trash2 className="h-3 w-3" />
-          </button>
+      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">{label}</label>
+
+      {currentSrc ? (
+        <div className="relative rounded-xl overflow-hidden border border-border bg-muted/20 mb-2">
+          <img src={currentSrc} alt="Preview" className="w-full h-32 sm:h-40 object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+            <span className="text-xs text-primary-foreground font-medium">Current image</span>
+            <button
+              onClick={() => onUrlChange("")}
+              className="bg-destructive text-destructive-foreground rounded-lg p-1.5 shadow-lg hover:bg-destructive/90 transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="border-2 border-dashed border-border rounded-xl p-6 sm:p-8 text-center mb-2 bg-muted/10">
+          <ImageIcon className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+          <p className="text-xs text-muted-foreground">No image set</p>
         </div>
       )}
-      <div className="flex gap-2">
-        <label className="cursor-pointer bg-muted hover:bg-muted/80 text-foreground text-xs px-3 py-2 rounded-lg border border-border transition-colors">
-          Upload Image
+
+      <div className="flex gap-1 mb-2">
+        <button
+          onClick={() => setMode("upload")}
+          className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg transition-colors ${mode === "upload" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+        >
+          <Upload className="h-3 w-3" />
+          Upload
+        </button>
+        <button
+          onClick={() => setMode("url")}
+          className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg transition-colors ${mode === "url" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+        >
+          <Link className="h-3 w-3" />
+          URL
+        </button>
+      </div>
+
+      {mode === "upload" ? (
+        <label className="cursor-pointer flex items-center justify-center gap-2 bg-muted/40 hover:bg-muted/60 text-foreground text-xs px-4 py-2.5 rounded-xl border border-border/50 transition-colors w-full">
+          <Upload className="h-3.5 w-3.5" />
+          Choose file…
           <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
         </label>
+      ) : (
         <Input
           type="url"
-          placeholder="Or paste image URL..."
+          placeholder="https://example.com/image.jpg"
           value={currentSrc?.startsWith("data:") ? "" : currentSrc}
           onChange={(e) => onUrlChange(e.target.value)}
-          className="rounded-lg text-xs flex-1"
+          className="rounded-xl text-xs bg-muted/30 border-border/50"
         />
-      </div>
+      )}
     </div>
   );
 }
@@ -130,7 +175,7 @@ export function StringListEditor({ items, onUpdate, label, addLabel = "Add" }: {
 }) {
   return (
     <div>
-      {label && <label className="text-sm font-medium text-foreground mb-1.5 block">{label}</label>}
+      {label && <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">{label}</label>}
       <div className="space-y-2">
         {items.map((item, i) => (
           <div key={i} className="flex gap-2">
@@ -141,17 +186,17 @@ export function StringListEditor({ items, onUpdate, label, addLabel = "Add" }: {
                 updated[i] = e.target.value;
                 onUpdate(updated);
               }}
-              className="rounded-lg text-sm flex-1"
+              className="rounded-xl text-sm flex-1 bg-muted/30 border-border/50"
             />
             <button
               onClick={() => onUpdate(items.filter((_, idx) => idx !== i))}
-              className="text-muted-foreground hover:text-destructive p-1"
+              className="text-muted-foreground hover:text-destructive p-1.5 rounded-lg hover:bg-destructive/10 transition-colors"
             >
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
         ))}
-        <Button variant="outline" size="sm" onClick={() => onUpdate([...items, ""])} className="gap-1 text-xs">
+        <Button variant="outline" size="sm" onClick={() => onUpdate([...items, ""])} className="gap-1.5 text-xs rounded-xl border-dashed border-2">
           <Plus className="h-3.5 w-3.5" />
           {addLabel}
         </Button>
@@ -162,8 +207,11 @@ export function StringListEditor({ items, onUpdate, label, addLabel = "Add" }: {
 
 export function SaveNotice() {
   return (
-    <p className="text-xs text-muted-foreground italic">
-      Changes save automatically to local storage.
-    </p>
+    <div className="flex items-center gap-2 py-4">
+      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+      <p className="text-xs text-muted-foreground">
+        Changes save automatically
+      </p>
+    </div>
   );
 }

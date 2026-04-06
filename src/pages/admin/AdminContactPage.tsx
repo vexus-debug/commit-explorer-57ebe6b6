@@ -7,8 +7,10 @@ const AdminContactPage = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Contact Page</h1>
-      <p className="text-muted-foreground text-sm mb-6">Edit contact information, methods, social links, and FAQs.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Contact Page</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Edit contact information, methods, social links, and FAQs.</p>
+      </div>
 
       <Section title="Page Hero">
         <Field label="Title" value={c.heroTitle} onChange={(v) => updateContent("contact.heroTitle", v)} />

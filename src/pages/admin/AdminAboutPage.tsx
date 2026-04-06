@@ -1,5 +1,5 @@
 import { useSiteContent } from "@/contexts/SiteContentContext";
-import { Section, Field, FieldRow, ListEditor, SaveNotice, StringListEditor } from "@/components/admin/EditorComponents";
+import { Section, Field, FieldRow, ListEditor, SaveNotice, StringListEditor, ImageUploadField } from "@/components/admin/EditorComponents";
 
 const AdminAboutPage = () => {
   const { content, updateContent } = useSiteContent();
@@ -7,8 +7,10 @@ const AdminAboutPage = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">About Page</h1>
-      <p className="text-muted-foreground text-sm mb-6">Edit the About Us page content.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">About Page</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Edit the About Us page content.</p>
+      </div>
 
       <Section title="Page Hero">
         <Field label="Title" value={a.heroTitle} onChange={(v) => updateContent("about.heroTitle", v)} />

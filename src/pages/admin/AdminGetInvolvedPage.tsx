@@ -7,8 +7,10 @@ const AdminGetInvolvedPage = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl font-bold text-foreground mb-1">Get Involved Page</h1>
-      <p className="text-muted-foreground text-sm mb-6">Edit volunteer roles, partnerships, events, and more.</p>
+      <div className="mb-5">
+        <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Get Involved Page</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Edit volunteer roles, partnerships, events, and more.</p>
+      </div>
 
       <Section title="Page Hero">
         <Field label="Title" value={g.heroTitle} onChange={(v) => updateContent("getInvolved.heroTitle", v)} />
